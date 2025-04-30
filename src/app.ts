@@ -2,7 +2,8 @@ import express, { Application, NextFunction, Request, Response } from 'express';
 import cors from 'cors';
 import httpStatus from 'http-status';
 import router from './app/route.ts';
-import globalErrorHandler from './app/utils/globalErrorHandler.js';
+import globalErrorHandler from './app/utils/globalErrorHandler';
+
 
 
 

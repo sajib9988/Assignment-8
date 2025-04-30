@@ -18,29 +18,28 @@ model Customer {
 }
 
 model Bike {
-  id            String          @id @default(uuid())
+  bikeId        String          @id @default(uuid()) 
+  brand         String
   model         String
-  licensePlate  String          @unique
+  year          Int
   customerId    String
   customer      Customer        @relation(fields: [customerId], references: [id])
   ServiceRecord ServiceRecord[]
 }
-
-model ServiceRecord {
-  id             String    @id @default(uuid())
-  bikeId         String
-  bike           Bike      @relation(fields: [bikeId], references: [id])
-  serviceDate    DateTime
-  description    String
-  status         ServiceStatus  @default(PENDING)
-  isCompleted    Boolean   @default(false)
-  completionDate DateTime?
-}
-
 
 
 enum ServiceStatus {
   PENDING
   IN_PROGRESS
   DONE
+}
+
+model ServiceRecord {
+  serviceId      String         @id @default(uuid()) // renamed from `id` → `serviceId`
+  bikeId         String
+  bike           Bike           @relation(fields: [bikeId], references: [bikeId])
+  serviceDate    DateTime
+  completionDate DateTime?
+  description    String
+  status         ServiceStatus  @default(PENDING)
 }
