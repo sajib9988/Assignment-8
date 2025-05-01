@@ -11,7 +11,7 @@ const createServiceRecord = catchAsync(async (req: Request, res: Response) => {
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
-        message: "Customer fetched successfully",
+        message: "New Service Created successfully",
         data: result,
     })
 
