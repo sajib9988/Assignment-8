@@ -28,11 +28,12 @@ model Bike {
 }
 
 
-enum ServiceStatus {
-  PENDING
-  IN_PROGRESS
-  DONE
+enum Status {
+  pending
+  in_progress
+  done
 }
+
 
 model ServiceRecord {
   serviceId      String         @id @default(uuid()) // renamed from `id` → `serviceId`
@@ -41,5 +42,5 @@ model ServiceRecord {
   serviceDate    DateTime
   completionDate DateTime?
   description    String
-  status         ServiceStatus  @default(PENDING)
+  status         Status  @default(pending)
 }
