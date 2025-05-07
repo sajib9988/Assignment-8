@@ -2,12 +2,44 @@ import { prisma } from "../../middleware/prisma";
 import { ICreateBike } from "./bike.interface";
 
 
-const createBike= async (payload:ICreateBike) =>{
+const createBike = async (payload: ICreateBike) => {
+    // চেক করা হচ্ছে যে customerId দিয়ে একটি গ্রাহক আছে কিনা
+    const customerExist = await prisma.customer.findUnique({
+      where: {
+        id: payload.customerId,  // customerId চেক করা হচ্ছে
+      },
+    });
+  
+
+    if (!customerExist) {
+      throw new Error("Customer not found!");
+    }
+  
+
+    const existingBike = await prisma.bike.findFirst({
+      where: {
+        customerId: payload.customerId,
+        brand: payload.brand,
+        model: payload.model,
+      },
+    });
+ 
+    if (existingBike) {
+      throw new Error("Bike with this brand and model already exists for this customer!");
+    }
+  
+ 
     const result = await prisma.bike.create({
-        data:payload
-    })
-    return result
-}
+      data: payload,
+    });
+  
+    return result;
+  };
+
+
+
+
+
 
 
 

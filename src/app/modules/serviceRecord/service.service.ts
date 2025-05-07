@@ -3,12 +3,30 @@ import { prisma } from "../../middleware/prisma"
 import { subDays } from "date-fns"
 
 
-const createService = async (payload:any) => {
- 
-        const service = await prisma.serviceRecord.create({ data:payload })
-        return service
-       
-}
+const createService = async (payload: any) => {
+   
+    const bikeExist = await prisma.bike.findUnique({
+      where: {
+        bikeId: payload.bikeId, 
+      },
+    });
+  
+    if (!bikeExist) {
+      throw new Error("Not Found Bike !!");
+    }
+  
+
+    const service = await prisma.serviceRecord.create({
+      data: {
+        bikeId: payload.bikeId,
+        serviceDate: payload.serviceDate,
+        description: payload.description,
+
+      },
+    });
+  
+    return service;
+  };
 
 
 const getAllService = async () => {

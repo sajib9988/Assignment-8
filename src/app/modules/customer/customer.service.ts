@@ -1,90 +1,74 @@
 import { prisma } from "../../middleware/prisma";
 import { IUpdateCustomer } from "./customer.interface";
 
+// Create Customer
+const createCustomer = async (data: {
+  name: string;
+  email: string;
+  phone: string;
+}) => {
+  const result = await prisma.customer.create({ data });
+  return result;
+};
 
-const createCustomer = async (  data:{
-    name: string;
-    email: string;
-    phone: string;
-    
-})=>{
-  
-    const  result =  await prisma.customer.create({
-        data
-    })
+// Get All Customers
+const getAllCustomer = async () => {
+  const result = await prisma.customer.findMany();
+  return result;
+};
 
-return result
-}
-
-
-
-
-
-
-const getAllCustomer =async() =>{
-    const result = await prisma.customer.findMany()
-  return result
-    // console.log(result)
-}
-
-
-
-
-
-
-
-
-
+// Get Specific Customer by ID
 const getSpecificCustomer = async (customerId: string) => {
-    const result = await prisma.customer.findUniqueOrThrow({
-        where: {
-            id: customerId
-        }
+  const result = await prisma.customer.findUnique({
+    where: { id: customerId },
+  });
 
+  if (!result) {
+    throw new Error("Customer not found!!"); 
+  }
 
+  return result;
+};
 
-    })
-console.log(result)
-    if (!result) {
-        throw new Error("Customer not found !!")
-    }
-return result
-}
-
-
+// Update Customer by ID
 const updateCustomer = async (customerId: string, payload: IUpdateCustomer) => {
-    const isExistCustomer = await prisma.customer.findFirst({ where: { id: customerId } })
-    if (!isExistCustomer) {
-        throw new Error("Customer not found for update!!")
-    }
-    const result = await prisma.customer.update({
-        where: {
-            id: customerId
-        },
-        data: payload
-    })
-    return result
+  const isExistCustomer = await prisma.customer.findUnique({
+    where: { id: customerId },
+  });
 
-}
+  if (!isExistCustomer) {
+    throw new Error("Customer not found for update!!");
+  }
 
-const deleteCustomer= async (customerId: string) => {
-    const isExistCustomer = await prisma.customer.findFirst({
-        where: {
-            id: customerId
-        }
-    })
-    if (!isExistCustomer) {
-        throw new Error("Customer not found for delete !!")
-    }
-    await prisma.customer.delete({ where: { id: customerId } })
-    return null
-}
+  const result = await prisma.customer.update({
+    where: { id: customerId },
+    data: payload,
+  });
 
+  return result;
+};
+
+// Delete Customer by ID
+const deleteCustomer = async (customerId: string) => {
+  const isExistCustomer = await prisma.customer.findUnique({
+    where: { id: customerId },
+  });
+
+  if (!isExistCustomer) {
+    throw new Error("Customer not found for delete!!");
+  }
+
+  await prisma.customer.delete({
+    where: { id: customerId },
+  });
+
+  return { message: "Customer deleted successfully" };
+};
 
 export const CustomerService = {
-    createCustomer,
-    getAllCustomer,
-    getSpecificCustomer,
-    updateCustomer,
-    deleteCustomer
+  createCustomer,
+  getAllCustomer,
+  getSpecificCustomer,
+  updateCustomer,
+  deleteCustomer,
 }
