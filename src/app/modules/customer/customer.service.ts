@@ -7,6 +7,18 @@ const createCustomer = async (data: {
   email: string;
   phone: string;
 }) => {
+
+  // Check if customer already exists
+  const existingCustomer = await prisma.customer.findUnique({ 
+    where: { email: data.email },
+  });
+
+  
+  if (existingCustomer) { 
+    throw new Error("Customer already exists with this email!!");
+  } 
+
+
   const result = await prisma.customer.create({ data });
   return result;
 };
